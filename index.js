@@ -1,6 +1,12 @@
 const express = require('express')
 const app = express()
 
+const requestTime = (req, res, next) => {
+  req.requestTime = Date.now()
+  next()
+}
+
+app.use(requestTime)
 app.use(express.json())
 
 let persons = [
@@ -29,6 +35,14 @@ let persons = [
 app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
+
+app.get('/info', (req, res) => {
+  let info = `Phonebook has info for ${persons.length} people`
+  info += `<br/>`
+  info += `<br>${Date(req.requestTime).toString()}</br>` 
+  res.send(info)
+  }
+)
 
 const PORT = 3001
 app.listen(PORT, () => {
