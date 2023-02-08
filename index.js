@@ -10,7 +10,8 @@ const requestTime = (req, res, next) => {
 
 app.use(requestTime)
 app.use(express.json())
-app.use(morgan('tiny'))
+//app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
     { 
@@ -34,6 +35,10 @@ let persons = [
         "number": "39-23-6423122"
       }
 ]
+
+morgan.token('body', req => {
+    return JSON.stringify(req.body)
+  })
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
@@ -74,6 +79,9 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(person)
 
   res.json(person)
+
+
+
 })
 
 app.get('/info', (req, res) => {
