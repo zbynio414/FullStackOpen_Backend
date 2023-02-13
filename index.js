@@ -11,6 +11,19 @@ const requestTime = (req, res, next) => {
   next()
 }
 
+const errorHandler = (error, req, res) => {
+  console.log(error.message)
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({error: 'malformated id'})
+  }
+  next(error)
+}
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({error: 'unknown endpoint'})
+}
+
 app.use(requestTime)
 app.use(express.json())
 //app.use(morgan('tiny'))
@@ -74,6 +87,9 @@ app.get('/info', (req, res) => {
   res.send(info)
   }
 )
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
