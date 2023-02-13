@@ -12,13 +12,13 @@ const requestTime = (req, res, next) => {
   next()
 }
 
-const errorHandler = (error, req, res) => {
+const errorHandler = (error, req, res, next) => {
   console.log(error.message)
 
   if (error.name === 'CastError') {
-    return res.status(400).send({error: 'malformated id'})
+    return res.status(400).send({ error: 'malformated id'})
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 
   next(error)
@@ -66,7 +66,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
   .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name) {return res.status(400).json(`error: name missing`)};
@@ -87,7 +87,7 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  Contact.countDocuments({}, (err, count) => {
+  Contact.countDocuments({}, (err, count) => {A
     let info = `Phonebook has info for ${count} people.`
     info += `<br/>`
     info += `<br>${Date(req.requestTime).toString()}</br>` 
@@ -100,7 +100,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 
   Contact.findByIdAndUpdate(
     req.params.id, 
-    {name, numer},
+    {name, number},
     {new: true, runValidators: true, context: 'query'}
     )
     .then(updatedContact => {
