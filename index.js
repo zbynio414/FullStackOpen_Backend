@@ -82,12 +82,13 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  let info = `Phonebook has info for ${persons.length} people`
-  info += `<br/>`
-  info += `<br>${Date(req.requestTime).toString()}</br>` 
-  res.send(info)
-  }
-)
+  Contact.countDocuments({}, (err, count) => {
+    let info = `Phonebook has info for ${count} people.`
+    info += `<br/>`
+    info += `<br>${Date(req.requestTime).toString()}</br>` 
+    res.send(info)
+  })
+})
 
 app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body
