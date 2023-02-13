@@ -17,7 +17,10 @@ const errorHandler = (error, req, res) => {
 
   if (error.name === 'CastError') {
     return res.status(400).send({error: 'malformated id'})
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
+
   next(error)
 }
 
@@ -76,9 +79,11 @@ app.post('/api/persons', (req, res) => {
     number: body.number
   })
 
-  contact.save().then(savedContact => {
+  contact.save()
+  .then(savedContact => {
     res.json(savedContact)
-  })  
+  })
+  .catch(error => next(error))  
 })
 
 app.get('/info', (req, res) => {
@@ -91,14 +96,13 @@ app.get('/info', (req, res) => {
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const body = req.body
+  const { name, number } = req.body
 
-  const contact = {
-    name: body.name,
-    number: body.number
-  }
-
-  Contact.findByIdAndUpdate(req.params.id, contact, {new: true})
+  Contact.findByIdAndUpdate(
+    req.params.id, 
+    {name, numer},
+    {new: true, runValidators: true, context: 'query'}
+    )
     .then(updatedContact => {
       res.json(updatedContact)
     })

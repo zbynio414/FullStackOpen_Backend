@@ -15,7 +15,11 @@ mongoose.connect(url)
 })
 
 const contactSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: 3,
+        require: true
+    },
     number: String
 })
 
