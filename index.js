@@ -5,6 +5,7 @@ const Contact = require('./models/contact')
 
 const morgan = require('morgan')
 const cors = require('cors')
+const { response } = require('express')
 
 const requestTime = (req, res, next) => {
   req.requestTime = Date.now()
@@ -87,6 +88,21 @@ app.get('/info', (req, res) => {
   res.send(info)
   }
 )
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body
+
+  const contact = {
+    name: body.name,
+    number: body.number
+  }
+
+  Contact.findByIdAndUpdate(req.params.id, contact, {new: true})
+    .then(updatedContact => {
+      res.json(updatedContact)
+    })
+    .catch(error => next(error))
+})
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
