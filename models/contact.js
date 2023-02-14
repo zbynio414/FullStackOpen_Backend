@@ -26,7 +26,7 @@ const contactSchema = new mongoose.Schema({
             validator: function(v) {
                 return /\d{2,3}-\d{1,}/.test(v);
             },
-            message: props => `${props.value} is not a valid phone number of 99-999999 format.`
+            message: props => `${props.value} is not a valid phone number of two digits and "-" and digits format.`
         },
         require: [true, 'User number required']
     }
